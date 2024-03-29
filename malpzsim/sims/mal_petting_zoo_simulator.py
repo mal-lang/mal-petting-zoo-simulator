@@ -187,7 +187,7 @@ class MalPettingZooSimulator(ParallelEnv):
             "asset_type": np.array(observation["asset_type"], dtype=np.int64),
             "asset_id": np.array(observation["asset_id"], dtype=np.int64),
             "step_name": np.array(observation["step_name"], dtype=np.int64),
-            "edges": np.array(observation["edges"], dtype=np.int64),
+            "edges": np.array(observation["edges"], dtype=np.int64).T,
         }
 
         return np_obs
@@ -210,7 +210,6 @@ class MalPettingZooSimulator(ParallelEnv):
             if not self.unholy
             else len(set(s.attributes["name"] for s in self.lang_graph.attack_steps))
         )
-        num_edges = len(self._blank_observation["edges"])
         # TODO is_observable is never set. It will be filled in once the
         # observability of the attack graph is determined.
         return Dict(
@@ -245,7 +244,7 @@ class MalPettingZooSimulator(ParallelEnv):
                 "edges": Box(
                     0,
                     num_objects,
-                    shape=(num_edges, 2),
+                    shape=self._blank_observation["edges"].shape,
                     dtype=np.int64,
                 ),  # edges between steps
             }
